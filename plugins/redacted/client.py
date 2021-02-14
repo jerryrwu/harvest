@@ -250,6 +250,17 @@ class RedactedClient:
             timeout=self.UPLOAD_TIMEOUT,
         )
 
+    @control_transaction()
+    def get_announce(self):
+        try:
+            self.config = RedactedClientConfig.objects.using('control').select_for_update().get()
+        except RedactedClientConfig.DoesNotExist:
+            raise RedactedException(
+                'Client config is missing. Please configure your account through settings.')
+        announce_url = self.config.announce_url
+        self.config = None
+        return announce_url
+
     def get_snatched(self, offset, limit):
         return self.request_ajax('user_torrents', type='snatched', id=self.get_index()['id'],
                                 offset=str(offset), limit=str(limit))
