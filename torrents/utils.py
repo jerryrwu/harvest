@@ -16,9 +16,14 @@ def get_zip_download_filename_base(torrent):
             tracker = TrackerRegistry.get_plugin(torrent.realm.name, 'download_torrent_zip')
             return tracker.get_zip_download_basename(torrent_info)
         except (PluginMissingException, NotImplementedError):
-            torrent_filename = os.path.splitext(
-                os.path.basename(torrent_info.torrent_file.torrent_filename))[0]
-            return f'[{torrent.realm.name.capitalize()} = {torrent_info.tracker_id}] {torrent_filename}'
+            try:
+                torrent_filename = os.path.splitext(
+                    os.path.basename(torrent_info.torrent_file.torrent_filename))[0]
+                return f'[{torrent.realm.name.capitalize()} = {torrent_info.tracker_id}] {torrent_filename}'
+            # If torrent added not through add_by_tracker, no torrent_file,
+            # and we return it's name instead
+            except AttributeError:
+                return torrent.name
     except TorrentInfo.DoesNotExist:
         return f'{realm_name} - {torrent.info_hash}'
 
