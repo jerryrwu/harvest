@@ -185,6 +185,12 @@ class AlcazarClient:
     def add_client(self, client_data):
         return self._request('POST', '/clients', json=client_data)
 
+    def pause_torrent(self, realm_name, info_hash):
+        return self._request('GET', '/torrents/pause_torrent/{}/{}'.format(realm_name, info_hash))
+
+    def resume_torrent(self, realm_name, info_hash):
+        return self._request('GET', '/torrents/resume_torrent/{}/{}'.format(realm_name, info_hash))
+
     def force_recheck(self, realm_name, info_hash):
         return self._request('GET', '/torrents/force_recheck/{}/{}'.format(realm_name, info_hash))
     

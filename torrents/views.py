@@ -204,6 +204,10 @@ class ForceReannounce(TorrentByIDView):
         torrent = self.get_object()
         return Response(force_reannounce(torrent=torrent))
 
+class MoveTorrent(TorrentByIDView):
+    def post(self, request, torrent_id, download_path):
+        pass
+
 class TorrentByRealmInfoHash(TorrentView, APIView):
     def get_object(self):
         try:
